@@ -1,29 +1,27 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 # -----------------------------------------------------------------------
 # 
 ##Getting started
-```{r starting, warning=FALSE, message=FALSE}
+
+```r
 library(dplyr)
 rm(list=ls()) #Cleans previous variables
 knitr::opts_chunk$set(results="hide", warning=FALSE, message=FALSE) #environment variables
 ```
 
 ## Loading and preprocessing the data
-```{r loading_data}
+
+```r
 #Reads data
 data=read.csv("activity.csv", header=TRUE)
 data$date=as.Date(data$date) # Formats date
 ```
 
 ## What is mean total number of steps taken per day?
-```{r Question_1}
+
+```r
 #Creates different dataframe with no NAs
 data.na=na.omit(data)
 
@@ -39,18 +37,20 @@ median=median(summary_day$steps)
 
 #Plots histogram of steps per day
 hist(summary_day$steps, breaks=20, main="Histogram of total steps per day", xlab = "Total steps", col="green")
-
 ```
 
+![](PA1_template_files/figure-html/Question_1-1.png) 
+
 ###Solution:
-####The mean number of steps per day is `r format(round(mean, 1), nsmall = 1)` and the median is `r format(round(median, 1), nsmall = 1)`
+####The mean number of steps per day is 10766.2 and the median is 10765.0
 
 ------------------------------------------------------
 ------------------------------------------------------
 ------------------------------------------------------
 
 ## What is the average daily activity pattern?
-```{r Question_2}
+
+```r
 #Creates table with average steps per interval
 summary_interval=data.na %>%
     select(c(1,3)) %>% #drops the dates column
@@ -64,8 +64,10 @@ inter=summary_interval$interval[which(summary_interval$steps == max(summary_inte
 plot(summary_interval, main="Steps as a function of day interval", xlab = "Interval", ylab = "Steps", type="l",lwd=2)
 ```
 
+![](PA1_template_files/figure-html/Question_2-1.png) 
+
 ###Solution:
-####The maximum number of steps is `r format(round(max, 1), nsmall = 1)` and occurs during the interval `r inter`
+####The maximum number of steps is 206.2 and occurs during the interval 835
 
 ------------------------------------------------------
 ------------------------------------------------------
@@ -73,7 +75,8 @@ plot(summary_interval, main="Steps as a function of day interval", xlab = "Inter
 
 ## Inputing missing values
 ####Here I will replace the NA values with the average number if steps corresponding to its particular time interval as calculated in the previous section.
-```{r Question_3}
+
+```r
 #Number of rows where steps=NA
 number.na.steps=sum(is.na(data$steps))
 
@@ -100,8 +103,10 @@ hist(summary_day_rep$steps, breaks=20, main="Histogram of total steps per day af
      xlab = "Total steps", col="red")
 ```
 
+![](PA1_template_files/figure-html/Question_3-1.png) 
+
 ###Solution:
-####There are `r number.na.steps` rows that have a NA value. After replacing the NA values with the average number of steps for that particular interval, the mean number of steps per day is `r format(round(mean2, 1), nsmall = 1)` and the median is `r format(round(median2, 1), nsmall = 1)`. Very similar to the values before the replacement.
+####There are 2304 rows that have a NA value. After replacing the NA values with the average number of steps for that particular interval, the mean number of steps per day is 10766.2 and the median is 10766.2. Very similar to the values before the replacement.
 
 ------------------------------------------------------
 ------------------------------------------------------
@@ -109,7 +114,8 @@ hist(summary_day_rep$steps, breaks=20, main="Histogram of total steps per day af
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r Question_4}
+
+```r
 #Formats date as dates and adds column with weekday
 data_replace$weekday=weekdays(data_replace$date) # Adds column with day
 
@@ -137,5 +143,7 @@ points(summary_interval_weekend, col="red", xlab = "Interval", ylab = "Steps", t
 legend(1800,220, c("Weekdays", "Weekends"), lty=c(1,1), lwd=c(2,2), col=c("blue","red"))
 ```
 
+![](PA1_template_files/figure-html/Question_4-1.png) 
+
 ###Solution:
-####It appears that walking activity begins and ends earlier during the weekdays than in the weekends, it also looks like the subject walks less in the weekdays (an average of `r format(round(weekday_walk, 1), nsmall = 1)` steps per day) than in the weekends (with an average of `r format(round(weekend_walk, 1), nsmall = 1)` steps per day)
+####It appears that walking activity begins and ends earlier during the weekdays than in the weekends, it also looks like the subject walks less in the weekdays (an average of 10255.8 steps per day) than in the weekends (with an average of 12201.5 steps per day)
